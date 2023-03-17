@@ -6,12 +6,17 @@ import (
 	"github.com/steve-care-software/libs/cryptography/hash"
 )
 
+// NewBuilder creates a new builder instance
+func NewBuilder() Builder {
+	hashAdapter := hash.NewAdapter()
+	return createBuilder(hashAdapter)
+}
+
 // Builder represents a user builder
 type Builder interface {
 	Create() Builder
 	WithName(name string) Builder
 	WithPubKey(pubKey hash.Hash) Builder
-	WithProfile(profile string) Builder
 	CreatedOn(createdOn time.Time) Builder
 	Now() (User, error)
 }
@@ -21,6 +26,5 @@ type User interface {
 	Hash() hash.Hash
 	Name() string
 	PubKey() hash.Hash
-	Profile() string
 	CreatedOn() time.Time
 }
