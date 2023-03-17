@@ -9,6 +9,11 @@ import (
 	"github.com/steve-care-software/propositions/domain/quotes/managers/tasks"
 )
 
+// NewBuilder initializes the builder
+func NewBuilder() Builder {
+	return createBuilder()
+}
+
 // Builder represents a resource builder
 type Builder interface {
 	Create() Builder
