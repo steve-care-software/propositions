@@ -8,6 +8,18 @@ import (
 	"github.com/steve-care-software/propositions/domain/users"
 )
 
+// NewBuilder creates a new builder instance
+func NewBuilder() Builder {
+	hashAdapter := hash.NewAdapter()
+	return createBuilder(hashAdapter)
+}
+
+// NewManagerBuilder creates a new manager builder
+func NewManagerBuilder() ManagerBuilder {
+	hashAdapter := hash.NewAdapter()
+	return createManagerBuilder(hashAdapter)
+}
+
 // Builder represents a manager's builder
 type Builder interface {
 	Create() Builder
@@ -30,6 +42,7 @@ type ManagerBuilder interface {
 	WithAmount(amount uint) ManagerBuilder
 	WithDuration(duration time.Duration) ManagerBuilder
 	CreatedOn(createdOn time.Time) ManagerBuilder
+	SubmittedBy(submittedBy users.User) ManagerBuilder
 	Now() (Manager, error)
 }
 
