@@ -13,7 +13,6 @@ import (
 
 type builder struct {
 	hashAdapter hash.Adapter
-	quote       quotes.Quote
 	managers    managers.Managers
 	deposit     units.Unit
 	pCreatedOn  *time.Time
@@ -25,7 +24,6 @@ func createBuilder(
 ) Builder {
 	out := builder{
 		hashAdapter: hashAdapter,
-		quote:       nil,
 		managers:    nil,
 		deposit:     nil,
 		pCreatedOn:  nil,
@@ -38,12 +36,6 @@ func createBuilder(
 // Create initializes the builder
 func (app *builder) Create() Builder {
 	return createBuilder(app.hashAdapter)
-}
-
-// WithQuote adds a quote to the builder
-func (app *builder) WithQuote(quote quotes.Quote) Builder {
-	app.quote = quote
-	return app
 }
 
 // WithManagers add managers to the builder
@@ -72,10 +64,6 @@ func (app *builder) ExpiresOn(expiresOn time.Time) Builder {
 
 // Now builds a new Task instance
 func (app *builder) Now() (Task, error) {
-	if app.quote == nil {
-		return nil, errors.New("the quote is mandatory in order to build a Task instance")
-	}
-
 	if app.managers == nil {
 		return nil, errors.New("the managers is mandatory in order to build a Task instance")
 	}
@@ -98,7 +86,6 @@ func (app *builder) Now() (Task, error) {
 	}
 
 	pHash, err := app.hashAdapter.FromMultiBytes([][]byte{
-		app.quote.Hash().Bytes(),
 		app.managers.Hash().Bytes(),
 		app.deposit.Hash().Bytes(),
 		[]byte(fmt.Sprintf("%d", app.pCreatedOn.Unix())),
@@ -109,9 +96,25 @@ func (app *builder) Now() (Task, error) {
 		return nil, err
 	}
 
+	var quote quotes.Quote
+	managersList := app.managers.List()
+	for idx, oneManager := range managersList {
+		if quote == nil {
+			quote = oneManager.Quote()
+			continue
+		}
+
+		quoteHash := quote.Hash()
+		managerQuoteHash := oneManager.Quote().Hash()
+		if !quoteHash.Compare(managerQuoteHash) {
+			str := fmt.Sprintf("the manager (index: %d) was executing on a quote (hash: %s) that is different than another one (index: %d) in the manager's list", 0, managerQuoteHash.String(), idx)
+			return nil, errors.New(str)
+		}
+	}
+
 	return createTask(
 		*pHash,
-		app.quote,
+		quote,
 		app.managers,
 		app.deposit,
 		*app.pCreatedOn,

@@ -18,7 +18,6 @@ func NewBuilder() Builder {
 // Builder represents a task builder
 type Builder interface {
 	Create() Builder
-	WithQuote(quote quotes.Quote) Builder
 	WithManagers(managers managers.Managers) Builder
 	WithDeposit(deposit units.Unit) Builder
 	CreatedOn(createdOn time.Time) Builder
