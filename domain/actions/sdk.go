@@ -9,20 +9,33 @@ import (
 	"github.com/steve-care-software/propositions/domain/users"
 )
 
-// NewBuilder creates a new builder instance
-func NewBuilder() Builder {
+// NewActionBuilder creates a new action builder instance
+func NewActionBuilder() ActionBuilder {
 	hashAdapter := hash.NewAdapter()
-	return createBuilder(hashAdapter)
+	return createActionBuilder(hashAdapter)
 }
 
 // Builder represents an action builder
 type Builder interface {
 	Create() Builder
-	WithResource(resource resources.Resource) Builder
-	WithMedia(media medias.Media) Builder
-	WithParent(parent Action) Builder
-	PostedBy(postedBy users.User) Builder
-	CreatedOn(createdOn time.Time) Builder
+	WithList(list []Action) Builder
+	Now() (Actions, error)
+}
+
+// Actions represents actions
+type Actions interface {
+	Hash() hash.Hash
+	List() []Action
+}
+
+// ActionBuilder represents an action builder
+type ActionBuilder interface {
+	Create() ActionBuilder
+	WithResource(resource resources.Resource) ActionBuilder
+	WithMedia(media medias.Media) ActionBuilder
+	WithParent(parent Action) ActionBuilder
+	PostedBy(postedBy users.User) ActionBuilder
+	CreatedOn(createdOn time.Time) ActionBuilder
 	Now() (Action, error)
 }
 

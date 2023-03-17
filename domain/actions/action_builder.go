@@ -11,7 +11,7 @@ import (
 	"github.com/steve-care-software/propositions/domain/users"
 )
 
-type builder struct {
+type actionActionBuilder struct {
 	hashAdapter hash.Adapter
 	resource    resources.Resource
 	media       medias.Media
@@ -20,10 +20,10 @@ type builder struct {
 	parent      Action
 }
 
-func createBuilder(
+func createActionBuilder(
 	hashAdapter hash.Adapter,
-) Builder {
-	out := builder{
+) ActionBuilder {
+	out := actionActionBuilder{
 		hashAdapter: hashAdapter,
 		resource:    nil,
 		media:       nil,
@@ -35,43 +35,43 @@ func createBuilder(
 	return &out
 }
 
-// Create initializes the builder
-func (app *builder) Create() Builder {
-	return createBuilder(app.hashAdapter)
+// Create initializes the actionActionBuilder
+func (app *actionActionBuilder) Create() ActionBuilder {
+	return createActionBuilder(app.hashAdapter)
 }
 
-// WithResource adds a resource to the builder
-func (app *builder) WithResource(resource resources.Resource) Builder {
+// WithResource adds a resource to the actionActionBuilder
+func (app *actionActionBuilder) WithResource(resource resources.Resource) ActionBuilder {
 	app.resource = resource
 	return app
 }
 
-// WithMedia adds a media to the builder
-func (app *builder) WithMedia(media medias.Media) Builder {
+// WithMedia adds a media to the actionActionBuilder
+func (app *actionActionBuilder) WithMedia(media medias.Media) ActionBuilder {
 	app.media = media
 	return app
 }
 
-// WithParent adds a parent action to the builder
-func (app *builder) WithParent(parent Action) Builder {
+// WithParent adds a parent action to the actionActionBuilder
+func (app *actionActionBuilder) WithParent(parent Action) ActionBuilder {
 	app.parent = parent
 	return app
 }
 
-// PostedBy adds a postedBy user to the builder
-func (app *builder) PostedBy(postedBy users.User) Builder {
+// PostedBy adds a postedBy user to the actionActionBuilder
+func (app *actionActionBuilder) PostedBy(postedBy users.User) ActionBuilder {
 	app.postedBy = postedBy
 	return app
 }
 
-// CreatedOn adds a creation time to the builder
-func (app *builder) CreatedOn(createdOn time.Time) Builder {
+// CreatedOn adds a creation time to the actionActionBuilder
+func (app *actionActionBuilder) CreatedOn(createdOn time.Time) ActionBuilder {
 	app.pCreatedOn = &createdOn
 	return app
 }
 
 // Now builds a new Action instance
-func (app *builder) Now() (Action, error) {
+func (app *actionActionBuilder) Now() (Action, error) {
 	if app.resource == nil {
 		return nil, errors.New("the resource is mandatory in order to build an Action instance")
 	}

@@ -29,18 +29,3 @@ type Task interface {
 	CreatedOn() time.Time
 	ExpiresOn() time.Time
 }
-
-// CompletedTaskBuilder represents a completed task builder
-type CompletedTaskBuilder interface {
-	Create() CompletedTaskBuilder
-	WithTask(task Task) CompletedTaskBuilder
-	WithSignatures(signatures [][]byte) CompletedTaskBuilder
-	Now() (CompletedTask, error)
-}
-
-// CompletedTask represents a completed task
-type CompletedTask interface {
-	Hash() hash.Hash
-	Task() Task
-	Signatures() [][]byte
-}
