@@ -1,10 +1,16 @@
-package tasks
+package progress
 
 import (
 	"github.com/steve-care-software/libs/cryptography/hash"
 	"github.com/steve-care-software/propositions/domain/actions"
 	"github.com/steve-care-software/propositions/domain/quotes/managers/tasks"
 )
+
+// NewBuilder creates a new builder instance
+func NewBuilder() Builder {
+	hashAdapter := hash.NewAdapter()
+	return createBuilder(hashAdapter)
+}
 
 // Builder represents progress
 type Builder interface {
